@@ -47,7 +47,7 @@ except:
     if os.getenv("DOCKER_BUILD", "RUNTIME") != "BUILD":
         # Unless we're doing a docker build, sleep for 10 minutes so we don't hammer ConEd
         print("Sit here and wait so we don't hammer ConEd")
-        time.sleep(600)
+        time.sleep(300)
         exit(1)
     # If we got here we're doing a Docker build and we only ran to download Chromium into the image. Just pretend everything went fine, we knew we would fail
     print("We're doing a Docker build, so exit and pretend everything worked!")
