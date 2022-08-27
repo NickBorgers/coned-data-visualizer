@@ -4,7 +4,7 @@ I don't like how ConEd represents electricity usage data, and want something tha
 I've used The Elastic Stack for this in the past and have containerized it before, so that seems easy.
 
 ## Configuration
-You must [follow the directions published for the underlying Python package for interacting with ConEd's website]().
+You must [follow the directions published for the underlying Python package for interacting with ConEd's website](https://github.com/bvlaicu/coned).
 
 Then, you can populate a `./.credentials.env` file like:
 ```
