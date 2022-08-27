@@ -1,0 +1,2 @@
+coned==0.3.0
+elasticsearch==8.3.3
