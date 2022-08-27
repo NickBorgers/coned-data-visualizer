@@ -81,7 +81,7 @@ es = Elasticsearch(
 )
 
 # Index this report document
-resp = es.index(index="coned-usage-readings", document=report_document)
+resp = es.index(index="coned-usage-readings", id=end_time, document=report_document)
 print("Attempted to push document to Elasticsearch----------------")
 print(resp['result'])
 
