@@ -3,7 +3,7 @@ I don't like how ConEd represents electricity usage data, and want something tha
 
 I've used The Elastic Stack for this in the past and have containerized it before, so that seems easy.
 
-[!Screenshot](Screenshot.png)
+![Screenshot](Screenshot.png)
 
 Note: this project isn't very useful to anyone but me because of what I decided to do with `macvlan` networks. I did this to isolate this software on my LAN because my host has access to subnets of various sensitivity. This makes the docker-relevant networking much more complicated and confusing. If you wanted to use this I'd primarily recommend ripping all that out and going back to using Docker-provided DNS resolution between containers.
 
