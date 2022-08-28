@@ -29,7 +29,14 @@ Recommended way to start this up is to run:
 make
 ```
 That will generate unique password for Elasticsearch and Kibana.
+
 Note: even in this configuration there will be a user `viewer` and password `password`; but it lacks privilege to do anything destructive.
 
+You technically can just run `docker-compose up` but it will use the passwords that have been comitted into the public repo. Whether or not this really matters depends on the level of network exposure for the endpoints.
+
 ## Weird thing I did
-I'm running this in an isolated VLAN, so the containers will try to interact with aspecific network interface that probably doesn't exist on your host and try to claim IP addresses that probably don't exist on your network.
+I'm running this in an isolated VLAN, so the containers will try to interact with a specific network interface that probably doesn't exist on your host and try to claim IP addresses that probably don't exist on your network.
+
+If you rip all of that out and/or adjust it for your environment, you should have the containers up and running.
+
+In my environment I visit Kibana @ http://10.212.99.7:80 and login with the username `viewer` and password `password`. There is a Dashboard already created and ready to use which shows my electrical power consumption. You'll likely want to adjust the timeframe of the search for the data to be meaningful, especially as ConEd provides data with a fairly significant lag (~1.5 hours).
