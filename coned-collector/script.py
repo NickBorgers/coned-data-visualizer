@@ -17,9 +17,9 @@ meter_number = os.getenv("METER_NUMBER", "123456890")
 site = os.getenv("SITE", Meter.SITE_CONED)
 
 # Elasticsearch configuration
-elasticsearch_url = os.getenv("ELASTICSEARCH_URL", "https://elasticsearch:9200")
-elasticsearch_username = os.getenv("ELASTICSEARCH_USERNAME", "elastic")
-elasticsearch_password = os.getenv("ELASTICSEARCH_PASSWORD", "dontcare")
+elasticsearch_url = os.getenv("ELASTIC_URL", "https://elasticsearch:9200")
+elasticsearch_username = os.getenv("ELASTIC_USERNAME", "elastic")
+elasticsearch_password = os.getenv("ELASTIC_PASSWORD", "dontcare")
 
 # Get timeout for all requests
 timeout_seconds = int(os.getenv("REQUEST_TIMEOUT_SECONDS", "90"))
@@ -73,12 +73,18 @@ report_document = {
     "timestamp": datetime.now(),
 }
 
-# Create connection with Elasticsearch
-es = Elasticsearch(
-    elasticsearch_url,
-    ca_certs="/app/certs/ca/ca.crt",
-    basic_auth=(elasticsearch_username, elasticsearch_password)
-)
+try:
+    # Create connection with Elasticsearch
+    es = Elasticsearch(
+        elasticsearch_url,
+        ca_certs="/app/certs/ca/ca.crt",
+        basic_auth=(elasticsearch_username, elasticsearch_password)
+    )
+except:
+    print("Failed to initialize Elasticsearch client, cannot proceed")
+    print("Sit here and wait so we don't hammer ConEd")
+    time.sleep(300)
+    exit(1)
 
 # Index this report document
 resp = es.index(index="coned-usage-readings", id=end_time, document=report_document)

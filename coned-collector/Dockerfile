@@ -1,6 +1,6 @@
 FROM python:3.10.6
 
-RUN apt update && apt install chromium -y && apt clean
+RUN apt update && apt install chromium iproute2 dnsutils -y && apt clean
 
 WORKDIR /app/
 
