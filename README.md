@@ -17,6 +17,7 @@ LOGIN_PASSWORD=password
 LOGIN_TOTP_SECRET=JBSWY3DPEHPK3PXP
 ACCOUNT_UUID=b6a7954a-f9a0-46bf-92a5-2ccc8e50a755
 METER_NUMBER=123456890
+COST_PER_KWH=0.30
 ```
 This will feed data to the ConEd Collector container.
 

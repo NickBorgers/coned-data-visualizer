@@ -15,6 +15,7 @@ mfa_secret = os.getenv("LOGIN_TOTP_SECRET", "JBSWY3DPEHPK3PXP")
 account_uuid = os.getenv("ACCOUNT_UUID", "b6a7954a-f9a0-46bf-92a5-2ccc8e50a755")
 meter_number = os.getenv("METER_NUMBER", "123456890")
 site = os.getenv("SITE", Meter.SITE_CONED)
+dollar_cost_per_kwh = float(os.getenv("COST_PER_KWH", "0.3"))
 
 # Elasticsearch configuration
 elasticsearch_url = os.getenv("ELASTIC_URL", "https://elasticsearch:9200")
@@ -53,11 +54,15 @@ except:
     print("We're doing a Docker build, so exit and pretend everything worked!")
     exit(0)
 
+# Calculate cost based on $ per kWH configuration
+cost = value*dollar_cost_per_kwh
+
 print("Got resutls from ConEd------------------")
 print("Start time: " + start_time)
 print("End time: " + end_time)
 print("Value: " + str(value))
 print("Unit of measurement: " + unit_of_measurement)
+print("Approximate cost: " + str(cost))
 
 # Create report object from results
 report_document = {
@@ -69,6 +74,8 @@ report_document = {
     "value": value,
     # Unit of measurement for reading
     "unit_of_measurement": unit_of_measurement,
+    # Approximate cost in dollars
+    "cost_in_dollars": cost,
     # Timestamp for indexing
     "timestamp": datetime.now(),
 }
