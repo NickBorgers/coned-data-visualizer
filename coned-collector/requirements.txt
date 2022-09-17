@@ -1,2 +1,2 @@
-coned==0.3.0
+git+https://github.com/NickBorgers/coned.git
 elasticsearch==8.3.3

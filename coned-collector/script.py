@@ -22,6 +22,20 @@ elasticsearch_url = os.getenv("ELASTIC_URL", "https://elasticsearch:9200")
 elasticsearch_username = os.getenv("ELASTIC_USERNAME", "elastic")
 elasticsearch_password = os.getenv("ELASTIC_PASSWORD", "dontcare")
 
+try:
+    # Create connection with Elasticsearch
+    es = Elasticsearch(
+        elasticsearch_url,
+        ca_certs="/app/certs/ca/ca.crt",
+        basic_auth=(elasticsearch_username, elasticsearch_password)
+    )
+except:
+    print("Failed to initialize Elasticsearch client, cannot proceed")
+    print("Sit here and wait so we don't hammer Elasticsearch")
+    for i in range(30):
+        time.sleep(1)
+    exit(1)
+
 # Get timeout for all requests
 timeout_seconds = int(os.getenv("REQUEST_TIMEOUT_SECONDS", "90"))
 
@@ -42,62 +56,51 @@ print("About to start making request to ConEd------------")
 
 # Get results by using Chromium to interact with ConEd
 try:
-    start_time, end_time, value, unit_of_measurement = event_loop.run_until_complete(asyncio.wait_for(meter.last_read(), timeout_seconds))
+    coned_readings = event_loop.run_until_complete(asyncio.wait_for(meter.all_reads(), timeout_seconds))
 except:
     print("Failed to get data from ConEd!")
     if os.getenv("DOCKER_BUILD", "RUNTIME") != "BUILD":
         # Unless we're doing a docker build, sleep for 10 minutes so we don't hammer ConEd
         print("Sit here and wait so we don't hammer ConEd")
-        time.sleep(300)
+        for i in range(600):
+            time.sleep(1)
         exit(1)
     # If we got here we're doing a Docker build and we only ran to download Chromium into the image. Just pretend everything went fine, we knew we would fail
     print("We're doing a Docker build, so exit and pretend everything worked!")
     exit(0)
 
-# Calculate cost based on $ per kWH configuration
-cost = value*dollar_cost_per_kwh
-
 print("Got resutls from ConEd------------------")
-print("Start time: " + start_time)
-print("End time: " + end_time)
-print("Value: " + str(value))
-print("Unit of measurement: " + unit_of_measurement)
-print("Approximate cost: " + str(cost))
+print("Latest was:")
+print("Start time: " + coned_readings[-1]['start_time'])
+print("End time: " + coned_readings[-1]['end_time'])
+print("Value: " + str(coned_readings[-1]['value']))
+print("Unit of measurement: " + coned_readings[-1]['unit_of_measurement'])
 
-# Create report object from results
-report_document = {
-    # Start time for reading
-    "start_time": start_time,
-    # End time for reading
-    "end_time": end_time,
-    # Value for reading
-    "value": value,
-    # Unit of measurement for reading
-    "unit_of_measurement": unit_of_measurement,
-    # Approximate cost in dollars
-    "cost_in_dollars": cost,
-    # Timestamp for indexing
-    "timestamp": datetime.now(),
-}
+report_documents = []
+for reading in coned_readings:
+    report_document = {
+        # Start time for reading
+        "start_time": reading['start_time'],
+        # End time for reading
+        "end_time": reading['end_time'],
+        # Value for reading
+        "value": reading['value'],
+        # Unit of measurement for reading
+        "unit_of_measurement": reading['unit_of_measurement'],
+        # Calculate cost based on $ per kWH configuration
+        "cost_in_dollars": reading['value']*dollar_cost_per_kwh,
+        # Timestamp for indexing
+        "timestamp": datetime.now(),
+    }
 
-try:
-    # Create connection with Elasticsearch
-    es = Elasticsearch(
-        elasticsearch_url,
-        ca_certs="/app/certs/ca/ca.crt",
-        basic_auth=(elasticsearch_username, elasticsearch_password)
-    )
-except:
-    print("Failed to initialize Elasticsearch client, cannot proceed")
-    print("Sit here and wait so we don't hammer ConEd")
-    time.sleep(300)
-    exit(1)
+    # Index this report document
+    resp = es.index(index="coned-usage-readings", id=reading['end_time'], document=report_document)
+    print("Attempted to push document to Elasticsearch----------------")
+    print(resp['result'])
 
-# Index this report document
-resp = es.index(index="coned-usage-readings", id=end_time, document=report_document)
-print("Attempted to push document to Elasticsearch----------------")
-print(resp['result'])
-
-print("Sleeping for 10 minutes before I die and get restarted--------------")
-# Sleep for 10 minutes st delay next run
-time.sleep(600)
+print("Sleeping for 6 hours before I die and get restarted--------------")
+# Sleep for 6 hours st delay next run
+# 21600 = 6 * 60 * 60
+# This loop means you can easily Ctrl+C the script while it sleeps
+for i in range(21600):
+   time.sleep(1)
