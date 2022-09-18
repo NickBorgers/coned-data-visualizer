@@ -98,9 +98,9 @@ for reading in coned_readings:
     print("Attempted to push document to Elasticsearch----------------")
     print(resp['result'])
 
-print("Sleeping for 6 hours before I die and get restarted--------------")
-# Sleep for 6 hours st delay next run
-# 21600 = 6 * 60 * 60
+print("Sleeping for 4 hours before I die and get restarted--------------")
+# Sleep for 4 hours to delay next run
+# 14400 = 4 * 60 * 60
 # This loop means you can easily Ctrl+C the script while it sleeps
-for i in range(21600):
+for i in range(14400):
    time.sleep(1)
