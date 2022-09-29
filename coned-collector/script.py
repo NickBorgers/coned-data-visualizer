@@ -2,9 +2,12 @@ import os
 import asyncio
 import json
 import time
+import logging
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from coned import Meter
+
+logging.basicConfig(level=logging.INFO)
 
 print("Starting retrieval and report cycle------------")
 
