@@ -39,20 +39,20 @@ services:
         find . -type d -exec chmod 750 \{\} \;;
         find . -type f -exec chmod 640 \{\} \;;
         echo "Waiting for Elasticsearch availability";
-        until curl -s --cacert config/certs/ca/ca.crt https://${ELASTICSEARCH_IP}:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
         echo "Setting kibana_system password";
-        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://${ELASTICSEARCH_IP}:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
         echo "Creating read-only user\n";
-        curl -s -XPOST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://${ELASTICSEARCH_IP}:9200/_security/user/viewer -H "Content-Type: application/json" --data "{\"password\": \"password\", \"roles\": [\"viewer\"]}";
+        curl -s -XPOST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://elasticsearch:9200/_security/user/viewer -H "Content-Type: application/json" --data "{\"password\": \"password\", \"roles\": [\"viewer\"]}";
         echo -ne "\nCreating Kibana management user\n";
-        curl -s -XPOST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://${ELASTICSEARCH_IP}:9200/_security/user/kibana_editor -H "Content-Type: application/json" --data "{\"password\": \"password\", \"roles\": [\"editor\"]}";
+        curl -s -XPOST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://elasticsearch:9200/_security/user/kibana_editor -H "Content-Type: application/json" --data "{\"password\": \"password\", \"roles\": [\"editor\"]}";
         echo -ne "\nWaiting for Kibana to be up\n";
-        until curl -s -u "kibana_editor:password" http://${KIBANA_IP}:5601/api/status | grep -q "All services are available"; do sleep 5; done;
+        until curl -s -u "kibana_editor:password" http://kibana:5601/api/status | grep -q "All services are available"; do sleep 5; done;
         echo -ne "\nCreating index pattern and dashboard\n";
-        curl -s -XPOST -u "kibana_editor:password" -H "kbn-xsrf: true" http://${KIBANA_IP}:5601/api/saved_objects/_import --form file=@/usr/share/kibana/index-pattern.ndjson;
-        curl -s -XPOST -u "kibana_editor:password" -H "kbn-xsrf: true" http://${KIBANA_IP}:5601/api/saved_objects/_import --form file=@/usr/share/kibana/dashboard.ndjson;
+        curl -s -XPOST -u "kibana_editor:password" -H "kbn-xsrf: true" http://kibana:5601/api/saved_objects/_import --form file=@/usr/share/kibana/index-pattern.ndjson;
+        curl -s -XPOST -u "kibana_editor:password" -H "kbn-xsrf: true" http://kibana:5601/api/saved_objects/_import --form file=@/usr/share/kibana/dashboard.ndjson;
         echo -ne "\nDeleting Kibana management user\n";
-        curl -s -XDELETE --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://${ELASTICSEARCH_IP}:9200/_security/user/kibana_editor;
+        curl -s -XDELETE --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" https://elasticsearch:9200/_security/user/kibana_editor;
         echo -ne "\nAll done!\n";
       '
     healthcheck:
@@ -60,10 +60,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
-    dns: 8.8.8.8
-    networks:
-      isolation_vlan:
-        ipv4_address: ${SETUP_IP}
   coned-collector:
     build:
       context: coned-collector
@@ -78,10 +74,6 @@ services:
       - certs:/app/certs
     image: coned-collector:latest
     restart: always
-    dns: 8.8.8.8
-    networks:
-      isolation_vlan:
-        ipv4_address: "${COLLECTOR_IP}"
   elasticsearch:
     depends_on:
       setup:
@@ -89,7 +81,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
-      - elasticsearch:/usr/share/elasticsearch/data
+      - ./elasticsearch:/usr/share/elasticsearch/data
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
@@ -117,15 +109,13 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://${ELASTICSEARCH_IP}:9200 | grep -q 'missing authentication credentials'",
+          "curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q 'missing authentication credentials'",
         ]
       interval: 10s
       timeout: 10s
       retries: 120
-    dns: 8.8.8.8
-    networks:
-      isolation_vlan:
-        ipv4_address: "${ELASTICSEARCH_IP}"
+    ports:
+      - 9200:9200
   kibana:
     depends_on:
       elasticsearch:
@@ -136,7 +126,7 @@ services:
       - kibana:/usr/share/kibana/data
     environment:
       - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=https://${ELASTICSEARCH_IP}:9200
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
@@ -150,36 +140,18 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-    dns: 8.8.8.8
-    networks:
-      isolation_vlan:
-        ipv4_address: "${KIBANA_IP}"
   haproxy:
-    build:
-      context: haproxy
-      dockerfile: Dockerfile
-    environment:
-      - "KIBANA_IP=${KIBANA_IP}"
-    dns: 8.8.8.8
+    image: haproxy:2.6
+    depends_on:
+      kibana:
+        condition: service_healthy
     sysctls:
       - net.ipv4.ip_unprivileged_port_start=0
-    networks:
-      isolation_vlan:
-        ipv4_address: "${HA_PROXY_IP}"
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - 80:80
 volumes:
   certs:
   elasticsearch:
   kibana:
-networks:
-  isolation_vlan:
-    name: isolation_vlan
-    driver: macvlan
-    driver_opts:
-      parent: enp43s0f1.99
-    ipam:
-      config:
-        - subnet: "10.212.99.0/24"
-          gateway: "10.212.99.1"
-    
-
-  
