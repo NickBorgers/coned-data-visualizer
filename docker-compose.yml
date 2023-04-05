@@ -116,6 +116,7 @@ services:
       retries: 120
     ports:
       - 9200:9200
+    restart: unless-stopped
   kibana:
     depends_on:
       elasticsearch:
@@ -140,6 +141,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    restart: unless-stopped
   haproxy:
     image: haproxy:2.6
     depends_on:
@@ -151,6 +153,7 @@ services:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     ports:
       - 80:80
+    restart: unless-stopped
 volumes:
   certs:
   elasticsearch:

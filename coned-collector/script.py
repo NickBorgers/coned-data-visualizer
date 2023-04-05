@@ -18,7 +18,7 @@ mfa_secret = os.getenv("LOGIN_TOTP_SECRET", "JBSWY3DPEHPK3PXP")
 account_uuid = os.getenv("ACCOUNT_UUID", "b6a7954a-f9a0-46bf-92a5-2ccc8e50a755")
 meter_number = os.getenv("METER_NUMBER", "123456890")
 site = os.getenv("SITE", Meter.SITE_CONED)
-dollar_cost_per_kwh = float(os.getenv("COST_PER_KWH", "0.3"))
+dollar_cost_per_kwh = float(os.getenv("COST_PER_KWH", "0.25"))
 
 # Elasticsearch configuration
 elasticsearch_url = os.getenv("ELASTIC_URL", "https://elasticsearch:9200")

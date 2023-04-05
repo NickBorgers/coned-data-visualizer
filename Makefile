@@ -1,9 +1,11 @@
-all: down up
+all: down up-and-regen-creds
 
 down:
 	docker-compose down
 
-up: down build generate_creds
+up-and-regen-creds: generate_creds up
+
+up: down build
 	docker-compose up -d
 	docker-compose logs -f
 
