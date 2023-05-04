@@ -27,7 +27,7 @@ Dependencies:
 
 Recommended way to start this up is to run:
 ```
-make
+make start
 ```
 That will generate unique password for Elasticsearch and Kibana.
 
