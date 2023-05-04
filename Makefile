@@ -29,4 +29,9 @@ generate_es_creds:
 #test_coned_creds: @ Test the ConEd credentials provided in .credentials.env
 test_coned_creds:
 	@echo "You must create and populate a .credential.env file based on the instructions linked in the README"
-	docker-compose up coned-collector
+	docker-compose pull
+	docker-compose build
+	@echo "The output will be super noisy!"
+	@echo "You want to see documents get pushed to Elasticsearch!"
+	@sleep 2
+	timeout 90s docker-compose up coned-collector
