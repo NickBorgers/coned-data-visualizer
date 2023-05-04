@@ -1,0 +1,442 @@
+nborgers@docker:~/code/coned-data-visualizer$ make test_coned_creds 
+You must create and populate a .credential.env file based on the instructions linked in the README
+docker-compose pull
+Pulling setup           ... done
+Pulling elasticsearch   ... done
+Pulling coned-collector ... done
+Pulling kibana          ... done
+Pulling haproxy         ... done
+WARNING: Some service image(s) must be built from source by running:
+    docker-compose build coned-collector
+docker-compose build
+setup uses an image, skipping
+elasticsearch uses an image, skipping
+kibana uses an image, skipping
+haproxy uses an image, skipping
+Building coned-collector
+Sending build context to Docker daemon   7.68kB
+Step 1/8 : FROM python:3.10.6
+ ---> d25a66380b10
+Step 2/8 : RUN apt update && apt install chromium iproute2 dnsutils -y && apt clean
+ ---> Using cache
+ ---> 757cc68264fc
+Step 3/8 : WORKDIR /app/
+ ---> Using cache
+ ---> b728ec23a30b
+Step 4/8 : COPY requirements.txt .
+ ---> Using cache
+ ---> 95c1acc872aa
+Step 5/8 : RUN pip install -r requirements.txt
+ ---> Using cache
+ ---> d355f9974ba2
+Step 6/8 : COPY script.py .
+ ---> Using cache
+ ---> 5e47b3f343b5
+Step 7/8 : RUN DOCKER_BUILD=BUILD REQUEST_TIMEOUT_SECONDS=5 python -u /app/script.py
+ ---> Using cache
+ ---> dc6a06c4727b
+Step 8/8 : CMD [ "python", "-u", "/app/script.py" ]
+ ---> Using cache
+ ---> 26483b139ebf
+Successfully built 26483b139ebf
+Successfully tagged coned-collector:latest
+The output will be super noisy!
+You want to see documents get pushed to Elasticsearch!
+timeout 90s docker-compose up coned-collector
+coned-data-visualizer_setup_1 is up-to-date
+coned-data-visualizer_elasticsearch_1 is up-to-date
+Recreating coned-data-visualizer_coned-collector_1 ... done
+Attaching to coned-data-visualizer_coned-collector_1
+coned-collector_1  | Starting retrieval and report cycle------------
+coned-collector_1  | /app/script.py:56: DeprecationWarning: There is no current event loop
+coned-collector_1  |   event_loop = asyncio.get_event_loop()
+coned-collector_1  | About to start making request to ConEd------------
+coned-collector_1  | [0504/124612.508337:ERROR:gpu_process_transport_factory.cc(980)] Lost UI shared context.
+coned-collector_1  | 
+coned-collector_1  | DevTools listening on ws://127.0.0.1:39453/devtools/browser/372fafa5-7b97-4d1a-b5d4-5457a45de96a
+coned-collector_1  | INFO:pyppeteer.launcher:Browser listening on: ws://127.0.0.1:39453/devtools/browser/372fafa5-7b97-4d1a-b5d4-5457a45de96a
+coned-collector_1  | [0504/124612.748664:ERROR:gpu_process_transport_factory.cc(980)] Lost UI shared context.
+coned-collector_1  | 
+coned-collector_1  | DevTools listening on ws://127.0.0.1:46593/devtools/browser/850e3fb0-4ee5-4c3f-ae95-d58cca192613
+coned-collector_1  | INFO:pyppeteer.launcher:Browser listening on: ws://127.0.0.1:46593/devtools/browser/850e3fb0-4ee5-4c3f-ae95-d58cca192613
+coned-collector_1  | [0504/124612.979009:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.979042:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.979059:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: crl4.digicert.com
+coned-collector_1  | [0504/124612.980313:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.980335:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.980350:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: crl4.digicert.com
+coned-collector_1  | [0504/124612.980826:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.980855:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.981135:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: crl4.digicert.com
+coned-collector_1  | [0504/124612.983393:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.983420:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: ocsp.digicert.com
+coned-collector_1  | [0504/124612.983442:ERROR:nss_ocsp.cc(582)] No URLRequestContext for NSS HTTP handler. host: crl4.digicert.com
+coned-collector_1  | [0504/124613.853695:INFO:CONSOLE(24)] "ERR_DUP_SCRIPTS", source: https://storage.glancecdn.net/cobrowse/js/GlanceCobrowseLoader_5.4.3M.js (24)
+coned-collector_1  | [0504/124613.932515:INFO:CONSOLE(11)] "Uncaught TypeError: Cannot read property 'split' of undefined", source: about:srcdoc (11)
+coned-collector_1  | [0504/124614.091010:INFO:CONSOLE(24)] "ERR_DUP_SCRIPTS", source: https://storage.glancecdn.net/cobrowse/js/GlanceCobrowseLoader_5.4.3M.js (24)
+coned-collector_1  | [0504/124614.333031:INFO:CONSOLE(5)] "SyntaxError: Unexpected token M in JSON at position 0
+coned-collector_1  |     at JSON.parse (<anonymous>)
+coned-collector_1  |     at N (https://asset.gomoxie.solutions/concierge/coned/client/storage_bridge.html:5:2823)", source: https://asset.gomoxie.solutions/concierge/coned/client/storage_bridge.html (5)
+coned-collector_1  | [0504/124614.964187:INFO:CONSOLE(1)] "'webkitRequestAnimationFrame' is vendor-specific. Please use the standard 'requestAnimationFrame' instead.", source: https://siteintercept.qualtrics.com/dxjsmodule/CoreModule.js?Q_CLIENTVERSION=1.90.0&Q_CLIENTTYPE=web&Q_BRANDID=coned (1)
+coned-collector_1  | [0504/124615.039622:INFO:CONSOLE(1)] "'webkitRequestAnimationFrame' is vendor-specific. Please use the standard 'requestAnimationFrame' instead.", source: https://siteintercept.qualtrics.com/dxjsmodule/CoreModule.js?Q_CLIENTVERSION=1.90.0&Q_CLIENTTYPE=web&Q_BRANDID=coned (1)
+coned-collector_1  | [0504/124623.215541:INFO:CONSOLE(24)] "ERR_DUP_SCRIPTS", source: https://storage.glancecdn.net/cobrowse/js/GlanceCobrowseLoader_5.4.3M.js (24)
+coned-collector_1  | [0504/124623.859625:INFO:CONSOLE(2)] "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.", source: https://acdn-prod-bsdce-ngcx-va.azureedge.net/va/coned-va-build.min.js (2)
+coned-collector_1  | [0504/124624.255046:INFO:CONSOLE(5)] "SyntaxError: Unexpected token M in JSON at position 0
+coned-collector_1  |     at JSON.parse (<anonymous>)
+coned-collector_1  |     at N (https://asset.gomoxie.solutions/concierge/coned/client/storage_bridge.html:5:2823)", source: https://asset.gomoxie.solutions/concierge/coned/client/storage_bridge.html (5)
+coned-collector_1  | [0504/124624.587145:INFO:CONSOLE(1)] "'webkitRequestAnimationFrame' is vendor-specific. Please use the standard 'requestAnimationFrame' instead.", source: https://siteintercept.qualtrics.com/dxjsmodule/CoreModule.js?Q_CLIENTVERSION=1.90.0&Q_CLIENTTYPE=web&Q_BRANDID=coned (1)
+coned-collector_1  | [0504/124625.718383:INFO:CONSOLE(24)] "ERR_DUP_SCRIPTS", source: https://storage.glancecdn.net/cobrowse/js/GlanceCobrowseLoader_5.4.3M.js (24)
+coned-collector_1  | [0504/124626.121723:INFO:CONSOLE(1)] "'webkitRequestAnimationFrame' is vendor-specific. Please use the standard 'requestAnimationFrame' instead.", source: https://siteintercept.qualtrics.com/dxjsmodule/CoreModule.js?Q_CLIENTVERSION=1.90.0&Q_CLIENTTYPE=web&Q_BRANDID=coned (1)
+coned-collector_1  | [0504/124627.261468:INFO:CONSOLE(2)] "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.", source: https://acdn-prod-bsdce-ngcx-va.azureedge.net/va/coned-va-build.min.js (2)
+coned-collector_1  | [0504/124627.697418:INFO:CONSOLE(24)] "ERR_DUP_SCRIPTS", source: https://storage.glancecdn.net/cobrowse/js/GlanceCobrowseLoader_5.4.3M.js (24)
+coned-collector_1  | [0504/124627.872576:INFO:CONSOLE(0)] "Mixed Content: The page at 'https://www.coned.com/en/accounts-billing/my-account/energy-use?tab1=billingandusage-1&tab3=sectionRealTimeData-3' was loaded over HTTPS, but requested an insecure image 'http://psi.tubemogul.com/ct/upi/pid/bh3j1ma8?redir=https%3A%2F%2Fsu.addthis.com%2Fred%2Fusync%3Fpid%3D24%26puid%3D%24%7BUSER_ID%7D%26ssrc%3D3&_test=null'. This content should also be served over HTTPS.", source: https://s7.addthis.com/static/sh.f48a1a04fe8dbf021b4cda1d.html#rand=0.6041683654083554&iit=1683204387581&tmr=load%3D1683204387564%26core%3D1683204387573%26main%3D1683204387579%26ifr%3D1683204387582&cb=0&cdn=0&md=0&kw=&ab=-&dh=www.coned.com&dr=&du=https%3A%2F%2Fwww.coned.com%2Fen%2Faccounts-billing%2Fmy-account%2Fenergy-use%3Ftab1%3Dbillingandusage-1%26tab3%3DsectionRealTimeData-3&href=https%3A%2F%2Fwww.coned.com%2Fen%2Faccounts-billing%2Fmy-account%2Fenergy-use&dt=Energy%20Use&dbg=0&cap=tc%3D0%26ab%3D0&inst=1&jsl=1&prod=undefined&lng=en&ogt=&pc=men&pub=ra-582f62c50bf7101d&ssl=1&sid=6453a92393286bc5&srf=0.01&ver=300&xck=0&xtr=0&og=&csi=undefined&rev=v8.28.8-wp&ct=1&xld=1&xd=1 (0)
+coned-collector_1  | [0504/124628.247994:INFO:CONSOLE(1)] "'webkitRequestAnimationFrame' is vendor-specific. Please use the standard 'requestAnimationFrame' instead.", source: https://siteintercept.qualtrics.com/dxjsmodule/CoreModule.js?Q_CLIENTVERSION=1.90.0&Q_CLIENTTYPE=web&Q_BRANDID=coned (1)
+coned-collector_1  |   res.url: https://cned.opower.com/ei/edge/apis/cws-real-time-ami-v1/cws/cned/accounts/f8e19b39-f3cd-11ec-9e6f-0200170a92cd/meters/13353531/usage
+coned-collector_1  |   res.status: 200
+coned-collector_1  |   res.url: https://cned.opower.com/ei/edge/apis/cws-real-time-ami-v1/cws/cned/accounts/f8e19b39-f3cd-11ec-9e6f-0200170a92cd/meters/13353531/usage
+coned-collector_1  |   res.status: 200
+coned-collector_1  | ERROR:asyncio:Task was destroyed but it is pending!
+coned-collector_1  | task: <Task pending name='Task-1296' coro=<resp() done, defined at /usr/local/lib/python3.10/site-packages/coned/meter.py:236> wait_for=<Task pending name='Task-1297' coro=<Response._bufread() running at /usr/local/lib/python3.10/site-packages/pyppeteer/network_manager.py:650> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[Task.task_wakeup()]>>
+coned-collector_1  | ERROR:asyncio:Task was destroyed but it is pending!
+coned-collector_1  | task: <Task pending name='Task-1297' coro=<Response._bufread() done, defined at /usr/local/lib/python3.10/site-packages/pyppeteer/network_manager.py:649> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[Task.task_wakeup()]>
+coned-collector_1  |   res.url: https://cned.opower.com/ei/edge/apis/cws-real-time-ami-v1/cws/cned/accounts/f8e19b39-f3cd-11ec-9e6f-0200170a92cd/meters/13353531/usage
+coned-collector_1  |   res.status: 200
+coned-collector_1  | INFO:pyppeteer.launcher:terminate chrome process...
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T09:00:00-04:00 2023-05-03T09:15:00-04:00 0.159 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T09:15:00-04:00 2023-05-03T09:30:00-04:00 0.138 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T09:30:00-04:00 2023-05-03T09:45:00-04:00 0.342 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T09:45:00-04:00 2023-05-03T10:00:00-04:00 0.543 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T10:00:00-04:00 2023-05-03T10:15:00-04:00 0.489 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T10:15:00-04:00 2023-05-03T10:30:00-04:00 0.441 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T10:30:00-04:00 2023-05-03T10:45:00-04:00 0.42 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T10:45:00-04:00 2023-05-03T11:00:00-04:00 0.42 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T11:00:00-04:00 2023-05-03T11:15:00-04:00 0.411 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T11:15:00-04:00 2023-05-03T11:30:00-04:00 0.384 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T11:30:00-04:00 2023-05-03T11:45:00-04:00 0.363 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T11:45:00-04:00 2023-05-03T12:00:00-04:00 0.372 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T12:00:00-04:00 2023-05-03T12:15:00-04:00 0.186 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T12:15:00-04:00 2023-05-03T12:30:00-04:00 0.153 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T12:30:00-04:00 2023-05-03T12:45:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T12:45:00-04:00 2023-05-03T13:00:00-04:00 0.141 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T13:00:00-04:00 2023-05-03T13:15:00-04:00 0.153 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T13:15:00-04:00 2023-05-03T13:30:00-04:00 0.153 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T13:30:00-04:00 2023-05-03T13:45:00-04:00 0.165 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T13:45:00-04:00 2023-05-03T14:00:00-04:00 0.159 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T14:00:00-04:00 2023-05-03T14:15:00-04:00 0.153 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T14:15:00-04:00 2023-05-03T14:30:00-04:00 0.147 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T14:30:00-04:00 2023-05-03T14:45:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T14:45:00-04:00 2023-05-03T15:00:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T15:00:00-04:00 2023-05-03T15:15:00-04:00 0.123 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T15:15:00-04:00 2023-05-03T15:30:00-04:00 0.33 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T15:30:00-04:00 2023-05-03T15:45:00-04:00 0.429 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T15:45:00-04:00 2023-05-03T16:00:00-04:00 0.381 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T16:00:00-04:00 2023-05-03T16:15:00-04:00 0.372 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T16:15:00-04:00 2023-05-03T16:30:00-04:00 0.399 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T16:30:00-04:00 2023-05-03T16:45:00-04:00 0.399 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T16:45:00-04:00 2023-05-03T17:00:00-04:00 0.393 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T17:00:00-04:00 2023-05-03T17:15:00-04:00 0.393 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T17:15:00-04:00 2023-05-03T17:30:00-04:00 0.393 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T17:30:00-04:00 2023-05-03T17:45:00-04:00 0.384 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T17:45:00-04:00 2023-05-03T18:00:00-04:00 0.171 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T18:00:00-04:00 2023-05-03T18:15:00-04:00 0.15 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T18:15:00-04:00 2023-05-03T18:30:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T18:30:00-04:00 2023-05-03T18:45:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T18:45:00-04:00 2023-05-03T19:00:00-04:00 0.144 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T19:00:00-04:00 2023-05-03T19:15:00-04:00 0.147 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T19:15:00-04:00 2023-05-03T19:30:00-04:00 0.159 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T19:30:00-04:00 2023-05-03T19:45:00-04:00 0.156 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T19:45:00-04:00 2023-05-03T20:00:00-04:00 0.126 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T20:00:00-04:00 2023-05-03T20:15:00-04:00 0.12 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T20:15:00-04:00 2023-05-03T20:30:00-04:00 0.135 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T20:30:00-04:00 2023-05-03T20:45:00-04:00 0.228 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T20:45:00-04:00 2023-05-03T21:00:00-04:00 0.255 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T21:00:00-04:00 2023-05-03T21:15:00-04:00 0.138 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T21:15:00-04:00 2023-05-03T21:30:00-04:00 0.219 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T21:30:00-04:00 2023-05-03T21:45:00-04:00 0.123 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T21:45:00-04:00 2023-05-03T22:00:00-04:00 0.126 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T22:00:00-04:00 2023-05-03T22:15:00-04:00 0.123 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T22:15:00-04:00 2023-05-03T22:30:00-04:00 0.126 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T22:30:00-04:00 2023-05-03T22:45:00-04:00 0.258 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T22:45:00-04:00 2023-05-03T23:00:00-04:00 0.252 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T23:00:00-04:00 2023-05-03T23:15:00-04:00 0.261 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T23:15:00-04:00 2023-05-03T23:30:00-04:00 0.261 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T23:30:00-04:00 2023-05-03T23:45:00-04:00 0.186 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-03T23:45:00-04:00 2023-05-04T00:00:00-04:00 0.105 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T00:00:00-04:00 2023-05-04T00:15:00-04:00 0.105 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T00:15:00-04:00 2023-05-04T00:30:00-04:00 0.093 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T00:30:00-04:00 2023-05-04T00:45:00-04:00 0.096 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T00:45:00-04:00 2023-05-04T01:00:00-04:00 0.096 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T01:00:00-04:00 2023-05-04T01:15:00-04:00 0.129 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T01:15:00-04:00 2023-05-04T01:30:00-04:00 0.258 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T01:30:00-04:00 2023-05-04T01:45:00-04:00 0.234 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T01:45:00-04:00 2023-05-04T02:00:00-04:00 0.231 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T02:00:00-04:00 2023-05-04T02:15:00-04:00 0.114 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T02:15:00-04:00 2023-05-04T02:30:00-04:00 0.105 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T02:30:00-04:00 2023-05-04T02:45:00-04:00 0.096 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T02:45:00-04:00 2023-05-04T03:00:00-04:00 0.084 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T03:00:00-04:00 2023-05-04T03:15:00-04:00 0.081 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T03:15:00-04:00 2023-05-04T03:30:00-04:00 0.096 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T03:30:00-04:00 2023-05-04T03:45:00-04:00 0.228 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T03:45:00-04:00 2023-05-04T04:00:00-04:00 0.207 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T04:00:00-04:00 2023-05-04T04:15:00-04:00 0.168 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T04:15:00-04:00 2023-05-04T04:30:00-04:00 0.102 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T04:30:00-04:00 2023-05-04T04:45:00-04:00 0.099 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T04:45:00-04:00 2023-05-04T05:00:00-04:00 0.096 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T05:00:00-04:00 2023-05-04T05:15:00-04:00 0.09 KWH
+coned-collector_1  | INFO:coned.meter:got read = 2023-05-04T05:15:00-04:00 2023-05-04T05:30:00-04:00 0.087 KWH
+coned-collector_1  | Got resutls from ConEd------------------
+coned-collector_1  | Latest was:
+coned-collector_1  | Start time: 2023-05-04T05:15:00-04:00
+coned-collector_1  | End time: 2023-05-04T05:30:00-04:00
+coned-collector_1  | Value: 0.087
+coned-collector_1  | Unit of measurement: KWH
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T09%3A15%3A00-04%3A00 [status:200 duration:0.031s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T09%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T09%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T10%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T10%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T10%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T10%3A45%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T11%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T11%3A15%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T11%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T11%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T12%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T12%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T12%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T12%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T13%3A00%3A00-04%3A00 [status:200 duration:0.011s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T13%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T13%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T13%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T14%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T14%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T14%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T14%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T15%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T15%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T15%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T15%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T16%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T16%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T16%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T16%3A45%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T17%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T17%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T17%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T17%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T18%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T18%3A15%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T18%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T18%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T19%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T19%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T19%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T19%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T20%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T20%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T20%3A30%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T20%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T21%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T21%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T21%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T21%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T22%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T22%3A15%3A00-04%3A00 [status:200 duration:0.011s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T22%3A30%3A00-04%3A00 [status:200 duration:0.011s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T22%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T23%3A00%3A00-04%3A00 [status:200 duration:0.007s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T23%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T23%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-03T23%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T00%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T00%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T00%3A30%3A00-04%3A00 [status:200 duration:0.011s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T00%3A45%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T01%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T01%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T01%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T01%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T02%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T02%3A15%3A00-04%3A00 [status:200 duration:0.011s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T02%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T02%3A45%3A00-04%3A00 [status:200 duration:0.012s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T03%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T03%3A15%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T03%3A30%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T03%3A45%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T04%3A00%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T04%3A15%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T04%3A30%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T04%3A45%3A00-04%3A00 [status:200 duration:0.009s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T05%3A00%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T05%3A15%3A00-04%3A00 [status:200 duration:0.010s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | INFO:elastic_transport.transport:PUT https://elasticsearch:9200/coned-usage-readings/_doc/2023-05-04T05%3A30%3A00-04%3A00 [status:200 duration:0.008s]
+coned-collector_1  | Attempted to push document to Elasticsearch----------------
+coned-collector_1  | updated
+coned-collector_1  | Sleeping for 4 hours before I die and get restarted--------------
+Gracefully stopping... (press Ctrl+C again to force)
+Stopping coned-data-visualizer_coned-collector_1   ... done
+make: *** [Makefile:37: test_coned_creds] Error 124

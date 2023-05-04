@@ -23,12 +23,13 @@ It's not great, but there is a Make function for testing your ConEd credentials.
 ```
 make test_coned_creds
 ```
+[The output of a succesful run of this test command is here.](test_coned_creds.out)
 
 ## Get this running
 Dependencies:
 1. Aforementioned setup for ConEd interaction
-1. Docker Compose; I'm actually running this with Podman + their support for interoperability with Docker Compose
-1. Make, if you want any semblance of security
+1. `docker-compose`
+1. `make`, if you want any semblance of security
 
 Recommended way to start this up is to run:
 ```
