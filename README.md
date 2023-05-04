@@ -19,6 +19,11 @@ COST_PER_KWH=0.30
 ```
 This will feed data to the ConEd Collector container.
 
+It's not great, but there is a Make function for testing your ConEd credentials. The biggest limitation is that the output is noisy and a bit unclear. In brief if you don't see documents get pushed to Elasticsearch, you didn't successfully pull data from ConEd's website. If you didn't get data from ConEd's website, your `.credentials.env` file probably has an error. 
+```
+make test_coned_creds
+```
+
 ## Get this running
 Dependencies:
 1. Aforementioned setup for ConEd interaction
